@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Post app</title>
+    <link rel="stylesheet" href="./styles/style.css" />
+    <script type="module" src="./index.js" defer></script>
+  </head>
+  <body>
+    <header id="header">
+      <div id="firstContainer">
+        <img
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi6983Bl6tjEq6YT8fkuaRXL9JoV2stfdJPg&s"
+          alt="post logo"
+        />
+        <h1>Post post</h1>
+        <button id="regLand">Register</button>
+        <button id="logLand">Login</button>
+      </div>
+    </header>
+    <main>
+      <div id="regLogContainer">
+        <form id="registration-form">
+          <h2>REGISTER</h2>
+          <label for="regEmail">Email</label>
+          <input type="email" name="" id="regEmail" />
+          <label for="regPass">Password</label>
+          <input type="password" name="" id="regPass" />
+          <button id="regSubmit">Submit registration</button>
+        </form>
+
+        <form id="login-form">
+          <h2>LOGIN</h2>
+          <label for="logEmail">Email</label>
+          <input type="email" name="" id="logEmail" />
+          <label for="logPass">Password</label>
+          <input type="password" name="" id="logPass" />
+          <button id="logSubmit">Submit login</button>
+        </form>
+      </div>
+      <section id="mainContainer"></section>
+    </main>
+  </body>
+</html>

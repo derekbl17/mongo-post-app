@@ -14,7 +14,5 @@ app.use("/users", require("./routes/userRoutes.js"));
 app.use(errorHandler);
 app.use("/ads", require("./routes/adRoutes.js"));
 
-console.log("JWT: ", process.env.JWT_SALT)
-
 const PORT = process.env.PORT || 999;
 app.listen(PORT, () => console.log(`server is UP on port: ${PORT}`));
