@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Post app</title>
     <link rel="stylesheet" href="./styles/style.css" />
-    <script type="module" src="./index.js" defer></script>
+    <script type="module" src="./js/index.js" defer></script>
   </head>
   <body>
     <header id="header">
@@ -14,13 +14,15 @@
         alt="post logo"
       />
       <h1>Post app</h1>
-      <button id="regLand">Register</button>
-      <button id="logLand">Login</button>
+      <button id="registerSelect">Register</button>
+      <button id="loginSelect">Login</button>
     </header>
     <main>
       <div id="regLogContainer">
         <form id="registration-form">
           <h2>REGISTER</h2>
+          <label for="regName">Name</label>
+          <input type="text" name="" id="regName" />
           <label for="regEmail">Email</label>
           <input type="email" name="" id="regEmail" />
           <label for="regPass">Password</label>

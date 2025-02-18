@@ -14,7 +14,8 @@
   "main": "app.js",
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Test start success\" && exit 1"
+    "test": "echo \"Test start success\" && exit 1",
+    "dev":"nodemon server.js"
   },
   "keywords": [],
   "author": "",
