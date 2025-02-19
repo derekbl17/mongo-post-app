@@ -12,7 +12,8 @@ async function getUser(req) {
   ) {
     try {
       const token = req.headers.authorization.split(" ")[1];
-      if (!token) return { status: 401, response: NOT_AUTHORIZED_NO_TOKEN };
+      if (!token && req.cookies.token) token=req.cookies.token
+      if (!token) return {status:401,response:NOT_AUTHORIZED_NO_TOKEN}
 
       const decoded = jwt.verify(token, process.env.JWT_SALT);
       const user = await User.findById(decoded.id).select("-password");

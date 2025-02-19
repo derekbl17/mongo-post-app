@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const cookieParser=require("cookie-parser")
 require("dotenv").config();
 //
 const { errorHandler } = require("./middleware/errorHandler.js");
@@ -9,13 +10,23 @@ const connectingDB = require("./config/db.js");
 connectingDB();
 const app = express();
 //
-app.use(cors());
-app.options("*", cors());
+const corsOptions={
+    origin: "http://127.0.0.1:5500",
+    methods:["GET", "POST", "PATCH", "DELETE", "PUT"],
+    credentials:true,
+    allowedHeaders:['Content-Type', 'Authorization']
+};
+app.options("*", cors(corsOptions));
+app.use(cors(corsOptions));
+//
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cookieParser())
 //
 app.use("/ads", require("./routes/adRoutes.js"));
 app.use("/users", require("./routes/userRoutes.js"));
+app.use("/auth",require("./routes/userRoutes.js"))
+app.use("/category",require("./routes/categoryRoutes.js"))
 //
 app.use(errorHandler);
 

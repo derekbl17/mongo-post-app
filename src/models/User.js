@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema(
       required: [true, "password cant be empty, user.js"],
     },
     role: { type: String, default: "simple" },
+    isBlocked: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

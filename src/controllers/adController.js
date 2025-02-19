@@ -17,4 +17,5 @@ const recordAd = asyncHandler(async (req, res) => {
   });
   res.status(200).json(ad);
 });
+
 module.exports = { recordAd };

@@ -1,5 +1,7 @@
 "use-strict"
 console.log("index.js initiated")
+import { simpleRole } from "./simpleRole.js"
+import { adminRole } from "./adminRole.js"
 
 const regSelect=document.getElementById("registerSelect")
 const loginSelect=document.getElementById("loginSelect")
@@ -9,6 +11,10 @@ const loginForm=document.getElementById("login-form")
 
 const regSubmit=document.getElementById("regSubmit")
 const loginSubmit=document.getElementById("logSubmit")
+
+const header=document.getElementById("header")
+
+const container=document.getElementById("mainContainer")
 
 const showRegistrationForm = () => {
     registerForm.classList.remove('displayNone');
@@ -49,7 +55,50 @@ const initializeFormHandlers = () => {
 
     showLoginForm();
 };
-document.addEventListener('DOMContentLoaded', initializeFormHandlers);
+
+
+// fnc to verify user and execute functions based on role
+const verification=()=>{
+    fetch("http://127.0.0.1:999/auth/verify",{
+        method: "GET",
+        credentials: "include"
+    })
+    .then((res)=>{
+        if(res.ok) return res.json();
+        else throw new Error("User not authenticated")
+    })
+    .then(user=>{
+        if(user._id && user.isBlocked===false){
+            console.log("User is logged in: ",user)
+            loginForm.remove()
+            registerForm.remove()
+            registerSelect.remove()
+            loginSelect.remove()
+            const logoutBtn=document.createElement("button")
+            logoutBtn.innerText="Log out"
+            logoutBtn.addEventListener("click",()=>{
+                fetch("http://127.0.0.1:999/auth/logout", { method: "POST",credentials:"include" })  // Trigger the logout route
+                    .then((res) => {
+                    console.log("logged out!")
+                    window.location.reload();  // Reload after logout
+                    })
+                    .catch((err) => console.error("Logout failed:", err));
+            })
+            header.append(logoutBtn)
+            user.role === "simple" ? simpleRole() : adminRole()
+        } else if(user.isBlocked===true){ // if blocked, alert and delete cookies
+            alert("Your account is blocked")
+            fetch("http://127.0.0.1:999/auth/logout", { method: "POST",credentials:"include" })
+            .then((res) => window.location.reload())
+        }
+    })
+    .catch((error)=>console.log(error.message))
+}
+// execute on page load
+document.addEventListener('DOMContentLoaded', (e)=>{
+    initializeFormHandlers();
+    verification();
+});
 
 // submit registration
 registerForm.addEventListener("submit", async(e)=>{
@@ -72,6 +121,21 @@ registerForm.addEventListener("submit", async(e)=>{
         }catch(error){
             console.error("Registration error: ",error)
         }
+        try{
+        const response = await fetch("http://127.0.0.1:999/users/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({email, password }),
+        credentials: "include",
+        });
+        const result = await response.json();
+        console.log(result);
+        response.ok ? verification() : alert('Login failed')
+        } catch(error){
+            console.error("Login error: ",error)
+        }
     }else{
         alert("Fields cant be blank")
     }
@@ -93,10 +157,11 @@ loginForm.addEventListener("submit",async(e)=>{
             "Content-Type": "application/json",
         },
         body: JSON.stringify({email, password }),
+        credentials: "include",
         });
         const result = await response.json();
         console.log(result);
-        response.ok ? alert(`welcome ${result.name} !`) : alert('Login failed')
+        response.ok ? verification() : alert('Login failed')
         } catch(error){
             console.error("Login error: ",error)
         }
