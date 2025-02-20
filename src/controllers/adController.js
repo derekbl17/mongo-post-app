@@ -18,5 +18,9 @@ const recordAd = asyncHandler(async (req, res) => {
   });
   res.status(200).json(ad);
 });
-
-module.exports = { recordAd };
+// @ get add /ads
+const getAd = asyncHandler(async (req, res) => {
+  const ads = await Ad.find({});
+  res.status(200).json(ads);
+});
+module.exports = { recordAd, getAd };
