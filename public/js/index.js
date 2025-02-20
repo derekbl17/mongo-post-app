@@ -16,6 +16,8 @@ const header=document.getElementById("header")
 
 const container=document.getElementById("mainContainer")
 
+const regLogContainer=document.getElementById("regLogContainer")
+
 const showRegistrationForm = () => {
     registerForm.classList.remove('displayNone');
     loginForm.classList.add('displayNone');
@@ -70,8 +72,7 @@ const verification=()=>{
     .then(user=>{
         if(user._id && user.isBlocked===false){
             console.log("User is logged in: ",user)
-            loginForm.remove()
-            registerForm.remove()
+            regLogContainer.remove()
             registerSelect.remove()
             loginSelect.remove()
             const logoutBtn=document.createElement("button")
@@ -121,6 +122,7 @@ registerForm.addEventListener("submit", async(e)=>{
         }catch(error){
             console.error("Registration error: ",error)
         }
+        //log in after registration
         try{
         const response = await fetch("http://127.0.0.1:999/users/login", {
         method: "POST",

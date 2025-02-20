@@ -4,8 +4,8 @@ const Ad = require("../models/Ad.js");
 // @ post
 // @ route /ads
 const recordAd = asyncHandler(async (req, res) => {
-  const { title, description, price } = req.body;
-  if (!title || !description || !price) {
+  const { title, description, price, link } = req.body;
+  if (!title || !description || !price || !link) {
     res.status(400);
     throw new Error("Please fill out all fields");
   }
@@ -13,6 +13,7 @@ const recordAd = asyncHandler(async (req, res) => {
     title,
     description,
     price,
+    link,
     user: req.user.id,
   });
   res.status(200).json(ad);

@@ -12,6 +12,7 @@ const adSchema = new mongoose.Schema(
       required: [true, "description name cant be empty"],
     },
     price: { type: Number, required: [true, "price cant be empty"] },
+    link: {type :String, required:true}
   },
   { timestamps: true }
 );

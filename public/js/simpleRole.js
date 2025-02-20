@@ -1,4 +1,4 @@
-export const simpleRole=()=>{
+export async function simpleRole(){
     const header=document.getElementById("header")
     const container=document.getElementById("mainContainer")
 
@@ -21,27 +21,30 @@ export const simpleRole=()=>{
         container.append(form)
 
         for (let x of fieldNames){
-            console.log(x);
             const label=document.createElement("label")
             label.innerText=`${x}`
             // fetch categories from DB and add each one as an option in select
             if (x==="Category"){
                 const select=document.createElement("select")
+                const option=document.createElement("option")
+                option.innerText="Choose category"
+                option.value=""
+                select.append(option)
                 ///////
-                onValue(ref(db, 'categories/'), (snapshot) => {
-                    const data = snapshot.val();
-                    const option=document.createElement("option")
-                    option.innerText="Choose category"
-                    option.value=""
-                    select.append(option)
-                    console.log(data);
-                    for(let k in data){
-                        const option=document.createElement("option")
-                        option.innerText=k
-                        option.value=k
-                        select.append(option)
-                    }
-                })
+                try {
+                    fetch("http://127.0.0.1:999/category")
+                    .then(response=>response.json())
+                    .then(categories=>{
+                        categories.forEach(category => {
+                            const option=document.createElement("option")
+                            option.innerText=category.name
+                            option.value=category.name
+                            select.append(option)
+                        });
+                    })
+                }catch(error){
+                    console.error(error)
+                }
                 // add an ID based off category
                 select.id=`addPostField${x.slice(0,3)}`
                 label.setAttribute("for",select.id)
@@ -62,6 +65,7 @@ export const simpleRole=()=>{
         const addPostFieldPri=document.getElementById("addPostFieldPri")
         const addPostFieldIma=document.getElementById("addPostFieldIma")
         postButton.innerText="Post!"
+        // submit post button
         postButton.addEventListener("click",(e)=>{
             e.preventDefault()
             console.log("POST!!!");
@@ -69,21 +73,31 @@ export const simpleRole=()=>{
             if (addPostFieldCat.value.trim() && addPostFieldNam.value.trim() && addPostFieldDes.value.trim() && addPostFieldPri.value.trim() && addPostFieldIma.value.trim()){
                 console.log("all Filled");
                 // ADD POST if all fields filled
-                set(push(ref(db, "posts/" + auth.currentUser.uid)), {
-                        name: addPostFieldNam.value,
-                        category: addPostFieldCat.value,
-                        description: addPostFieldDes.value,
-                        price: addPostFieldPri.value,
-                        imageLink: addPostFieldIma.value
-                      }).then(()=>{
-                        alert("successfully posted!");
-                        
-                      })
-                // if all fields !filled vvvvvv         
-            } else{
-                console.log("no value somewhere..");
-            }
-        })
+                fetch("http://127.0.0.1:999/ads", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials:"include",
+                body: JSON.stringify({
+                    title: addPostFieldNam.value,
+                    category: addPostFieldCat.value,
+                    description: addPostFieldDes.value,
+                    price: parseInt(addPostFieldPri.value),
+                    link: addPostFieldIma.value
+                    }),
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error(`Error: ${response.statusText}`)
+                    return response.json()})
+                .then(result =>{
+                    console.log(result)
+                    alert("Successfully posted!")
+                })
+                .catch(error=>console.error("Error Posting: ",error))       
+            }else{
+                console.log("not all fields filled")
+            }})
         form.append(postButton)
     })
 }

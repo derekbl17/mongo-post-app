@@ -52,6 +52,7 @@ async function displayCategories() {
 }};
 async function displayUsers() {
     try {
+        container.innerHTML=""
         const response = await fetch("http://127.0.0.1:999/users");
         const users = await response.json();
         
