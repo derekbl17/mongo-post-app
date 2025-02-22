@@ -12,7 +12,7 @@ const app = express();
 //
 const corsOptions={
     origin: "http://127.0.0.1:5500",
-    methods:["GET", "POST", "PATCH", "DELETE", "PUT"],
+    methods:["GET", "POST", "DELETE", "PUT"],
     credentials:true,
     allowedHeaders:['Content-Type', 'Authorization']
 };

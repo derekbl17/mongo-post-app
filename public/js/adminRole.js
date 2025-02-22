@@ -1,3 +1,4 @@
+import { displayPosts } from "./displayPosts.js";
 const container=document.getElementById("mainContainer")
 async function displayCategories() {
     try {
@@ -174,7 +175,6 @@ export const adminRole=()=>{
         else throw new Error("User not authenticated")
     })
     .then(user=>{
-        console.log(user)
         currentUser=user
     })
     const header=document.getElementById("header")
@@ -192,19 +192,7 @@ export const adminRole=()=>{
     header.append(createCategoryBtn,showUsersBtn,showPostsBtn)
 
     showPostsBtn.addEventListener("click",async(e)=>{
-        container.innerHTML=""
-        try{
-            const response = await fetch("http://127.0.0.1:999/ads")
-            if(response.ok){
-                const posts = await response.json()
-                console.log(posts)
-                displayPosts(posts,currentUser)
-            }
-        }catch(error){
-            console.log("error fetching posts", error)
-        }
-        
-
+      displayPosts()
     })
 
     createCategoryBtn.addEventListener("click",(e)=>{
@@ -314,112 +302,112 @@ export const adminRole=()=>{
 
 
 /////////TODO move displayPosts with button functions to a different file, use it in simple users post display, make the edit work, add delete ad route with all, look into favorites 
-function displayPosts(posts, currentUser) {
-  const mainContainer = document.getElementById('mainContainer');
-  mainContainer.classList.add("postsContainer")
+// function displayPosts(posts, currentUser) {
+//   const mainContainer = document.getElementById('mainContainer');
+//   mainContainer.classList.add("postsContainer")
   
-  // Clear any existing content
-  mainContainer.innerHTML = '';
+//   // Clear any existing content
+//   mainContainer.innerHTML = '';
   
-  posts.forEach(post => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.setAttribute('data-post-id', post._id);
+//   posts.forEach(post => {
+//     const card = document.createElement('div');
+//     card.className = 'card';
+//     card.setAttribute('data-post-id', post._id);
 
-    // Check if user is author or admin
-    const isAuthorized = currentUser.role === 'admin' || currentUser.id === post.user;
+//     // Check if user is author or admin
+//     const isAuthorized = currentUser.role === 'admin' || currentUser.id === post.user;
     
     
     
-    const isValidUrl = (urlString) => {
-      try {
-        return Boolean(new URL(urlString));
-      } catch (e) {
-        return false;
-      }
-    };
-    const imageUrl = post.link && isValidUrl(post.link) 
-      ? post.link 
-      : `https://placehold.co/600x400?text=${encodeURIComponent(post.title || 'No Image')}`;
+//     const isValidUrl = (urlString) => {
+//       try {
+//         return Boolean(new URL(urlString));
+//       } catch (e) {
+//         return false;
+//       }
+//     };
+//     const imageUrl = post.link && isValidUrl(post.link) 
+//       ? post.link 
+//       : `https://placehold.co/600x400?text=${encodeURIComponent(post.title || 'No Image')}`;
 
-    card.innerHTML = `
-      <div class="card-image">
-        <img src="${imageUrl}" alt="${post.title}">
-      </div>
-      <div class="card-header">
-        <h2>${post.title}</h2>
-        ${post.createdAt ? `<p class="date">${new Date(post.createdAt).toLocaleDateString()}</p>` : ''}
+//     card.innerHTML = `
+//       <div class="card-image">
+//         <img src="${imageUrl}" alt="${post.title}">
+//       </div>
+//       <div class="card-header">
+//         <h2>${post.title}</h2>
+//         ${post.createdAt ? `<p class="date">${new Date(post.createdAt).toLocaleDateString()}</p>` : ''}
         
-      </div>
-      <div class="card-content"><p>${post.description}</p></div>
-      <div class="card-footer"><p class="price">${post.price.toLocaleString()} €</p></div>
-      <div class="card-controls">
-          ${isAuthorized ? `
-            <button class="edit-btn" data-post-id="${post._id}">Edit</button>
-            <button class="delete-btn" data-post-id="${post._id}">Delete</button>
-          ` : `
-            <button class="favorite-btn" data-post-id="${post._id}" id="fav-${post._id}">♡ Favorite</button>
-          `}
-        </div>
-    `;
+//       </div>
+//       <div class="card-content"><p>${post.description}</p></div>
+//       <div class="card-footer"><p class="price">${post.price.toLocaleString()} €</p></div>
+//       <div class="card-controls">
+//           ${isAuthorized ? `
+//             <button class="edit-btn" data-post-id="${post._id}">Edit</button>
+//             <button class="delete-btn" data-post-id="${post._id}">Delete</button>
+//           ` : `
+//             <button class="favorite-btn" data-post-id="${post._id}" id="fav-${post._id}">♡ Favorite</button>
+//           `}
+//         </div>
+//     `;
 
     
-    mainContainer.appendChild(card);
-  });
-  mainContainer.addEventListener('click', (event) => {
-    const postId = event.target.dataset.postId;
-    if (!postId) return;
-    if (event.target.classList.contains('delete-btn')) deletePost(postId);
-    if (event.target.classList.contains('edit-btn')) editPost(postId);
-    if (event.target.classList.contains('favorite-btn')) toggleFavorite(postId);
-  });
-}
+//     mainContainer.appendChild(card);
+//   });
+//   mainContainer.addEventListener('click', (event) => {
+//     const postId = event.target.dataset.postId;
+//     if (!postId) return;
+//     if (event.target.classList.contains('delete-btn')) deletePost(postId);
+//     if (event.target.classList.contains('edit-btn')) editPost(postId);
+//     if (event.target.classList.contains('favorite-btn')) toggleFavorite(postId);
+//   });
+// }
 
-window.deletePost = deletePost;
-window.editPost = editPost;
-window.toggleFavorite = toggleFavorite;
+// window.deletePost = deletePost;
+// window.editPost = editPost;
+// window.toggleFavorite = toggleFavorite;
 
-// Handler functions for the buttons
-async function deletePost(postId) {
-  if (confirm('Are you sure you want to delete this post?')) {
-    try {
-      const response = await fetch(`/api/ads/${postId}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        // Remove the post from UI
-        document.querySelector(`[data-post-id="${postId}"]`).remove();
-      } else {
-        throw new Error('Failed to delete post');
-      }
-    } catch (error) {
-      console.error('Error deleting post:', error);
-      alert('Failed to delete post');
-    }
-  }
-}
+// // Handler functions for the buttons
+// async function deletePost(postId) {
+//   if (confirm('Are you sure you want to delete this post?')) {
+//     try {
+//       const response = await fetch(`/api/ads/${postId}`, {
+//         method: 'DELETE',
+//       });
+//       if (response.ok) {
+//         // Remove the post from UI
+//         document.querySelector(`[data-post-id="${postId}"]`).remove();
+//       } else {
+//         throw new Error('Failed to delete post');
+//       }
+//     } catch (error) {
+//       console.error('Error deleting post:', error);
+//       alert('Failed to delete post');
+//     }
+//   }
+// }
 
-function editPost(postId) {
-  // Redirect to edit page or open edit modal
-  window.location.href = `/edit-post/${postId}`;
-}
+// function editPost(postId) {
+//   // Redirect to edit page or open edit modal
+//   window.location.href = `/edit-post/${postId}`;
+// }
 
-async function toggleFavorite(postId) {
-  const favBtn = document.getElementById(`fav-${postId}`);
-  try {
-    const response = await fetch(`/api/posts/${postId}/favorite`, {
-      method: 'POST',
-    });
-    if (response.ok) {
-      // Toggle favorite status in UI
-      favBtn.classList.toggle('favorited');
-      favBtn.textContent = favBtn.classList.contains('favorited') ? '♥ Favorited' : '♡ Favorite';
-    }
-  } catch (error) {
-    console.error('Error toggling favorite:', error);
-    alert('Failed to update favorite status');
-  }
-}
+// async function toggleFavorite(postId) {
+//   const favBtn = document.getElementById(`fav-${postId}`);
+//   try {
+//     const response = await fetch(`/api/posts/${postId}/favorite`, {
+//       method: 'POST',
+//     });
+//     if (response.ok) {
+//       // Toggle favorite status in UI
+//       favBtn.classList.toggle('favorited');
+//       favBtn.textContent = favBtn.classList.contains('favorited') ? '♥ Favorited' : '♡ Favorite';
+//     }
+//   } catch (error) {
+//     console.error('Error toggling favorite:', error);
+//     alert('Failed to update favorite status');
+//   }
+// }
 
 // Usage example:
 // const currentUser = {

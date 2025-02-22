@@ -74,14 +74,14 @@ button:hover{
     color: #4CAF50;
     font-weight: bold;
 }
-#addPostForm label, #CATEGORIES label, #addCatForm label{ 
+#addPostForm label, #CATEGORIES label, #addCatForm label,#registration-form label, #login-form label{ 
     display: block;
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 8px;
   color: #333;
 }
-#addPostForm input,select, #addCatForm input{
+#addPostForm input,select, #addCatForm input,#registration-form input, #login-form input{
     width: 100%;
   padding: 10px;
   margin-bottom: 15px;
@@ -90,12 +90,12 @@ button:hover{
   border-radius: 4px;
   box-sizing: border-box;
 }
-#addPostForm input:focus,#addPostForm select:focus, #addCatForm input:focus{
+#addPostForm input:focus,#addPostForm select:focus, #addCatForm input:focus,#registration-form input:focus, #login-form input:focus{
       border-color: #007BFF;
   outline: none;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
-#addPostForm, #addCatForm, #CATEGORIES{
+#addPostForm, #addCatForm, #CATEGORIES, #registration-form, #login-form{
     width: 100%;
   max-width: 400px;
   margin: 0 auto;
@@ -105,7 +105,7 @@ button:hover{
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-#addPostForm button, #addCatForm button, #CATEGORIES button{
+#addPostForm button, #addCatForm button, #CATEGORIES button,#registration-form button, #login-form button{
       width: 100%;
   padding: 12px;
   font-size: 16px;
@@ -133,15 +133,17 @@ h5{
 }
 
 .card-image {
-  width: 100%;
-  height: 200px;
-  overflow: hidden;
+  position:relative;
 }
 
 .card-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+}
+.card-image label {
+    display: block;
+    margin-top: 10px;
+    cursor: pointer;
 }
 
 .card-header {

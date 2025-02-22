@@ -1,3 +1,4 @@
+import { displayPosts } from "./displayPosts.js"
 export async function simpleRole(){
     const header=document.getElementById("header")
     const container=document.getElementById("mainContainer")
@@ -6,7 +7,14 @@ export async function simpleRole(){
     addPostBtn.innerText="Add Post"
 
     container.innerText="SIMPLE USER"
-    header.append(addPostBtn)
+    
+    const showPostsBtn=document.createElement("button")
+    showPostsBtn.innerText="Show posts"
+    showPostsBtn.id="showPostsBtn"
+    showPostsBtn.addEventListener("click",()=>{
+        displayPosts()
+    })
+    header.append(addPostBtn,showPostsBtn)
 
     addPostBtn.addEventListener("click",(e)=>{
         container.innerHTML=""
