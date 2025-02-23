@@ -18,11 +18,37 @@ const recordAd = asyncHandler(async (req, res) => {
   });
   res.status(200).json(ad);
 });
+
 // @ get add /ads
 const getAd = asyncHandler(async (req, res) => {
   const ads = await Ad.find({});
-  res.status(200).json(ads);
+
+  const adsWithFavorites = ads.map(ad => {
+    const adObj = ad.toObject();
+    console.log("your ad:",adObj)
+
+    // Ensure favorites is an array
+    adObj.favorites = ad.favorites || [];
+
+    // Add isFavoritedBy if user is authenticated
+    console.log("req.user: ",req.user)
+    console.log("req.user.id: ",req.user.id)
+    if (req.user && req.user.id) {
+      adObj.isFavoritedBy = adObj.favorites.includes(req.user.id);
+    } else {
+      adObj.isFavoritedBy = false; // Default to false if user is not authenticated
+    }
+
+    // Add favoritesCount
+    adObj.favoritesCount = adObj.favorites.length;
+
+    return adObj;
+  });
+
+
+  res.status(200).json(adsWithFavorites);
 });
+
 // @ update
 const updateAd = asyncHandler(async (req, res) => {
 
@@ -56,4 +82,36 @@ const deleteAd = asyncHandler(async(req,res)=>{
   const ad = await Ad.findByIdAndDelete(req.params.id)
   res.status(200).json(ad)
 })
-module.exports = { recordAd, getAd,updateAd,deleteAd };
+// @ toggle favorite
+const toggleFavorite = asyncHandler(async (req, res) => {
+  const ad = await Ad.findById(req.params.id);
+
+  if (!ad) {
+    res.status(404);
+    throw new Error("Ad not found");
+  }
+
+  // Initialize favorites array if it doesn't exist
+  if (!ad.favorites) {
+    ad.favorites = [];
+  }
+
+  const userIndex = ad.favorites.indexOf(req.user.id);
+  
+  if (userIndex === -1) {
+    // Add favorite
+    ad.favorites.push(req.user.id);
+  } else {
+    // Remove favorite
+    ad.favorites.splice(userIndex, 1);
+  }
+
+  await ad.save();
+
+  res.status(200).json({
+    isFavorited: userIndex === -1, // true if we just added it, false if we removed it
+    favoritesCount: ad.favorites.length,
+    favorites: ad.favorites
+  });
+});
+module.exports = { recordAd, getAd,updateAd,deleteAd, toggleFavorite };

@@ -198,3 +198,7 @@ h5{
     justify-content: end;
     border-top: 1px solid #eee;
 }
+.favorite-btn.favorited {
+    background-color: #ff4d4d;
+    color: white;
+}
