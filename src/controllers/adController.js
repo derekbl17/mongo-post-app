@@ -84,37 +84,6 @@ const deleteAd = asyncHandler(async(req,res)=>{
   res.status(200).json(ad)
 })
 // @ toggle favorite
-// const toggleFavorite = asyncHandler(async (req, res) => {
-//   const ad = await Ad.findById(req.params.id);
-
-//   if (!ad) {
-//     res.status(404);
-//     throw new Error("Ad not found");
-//   }
-
-//   // Initialize favorites array if it doesn't exist
-//   if (!ad.favorites) {
-//     ad.favorites = [];
-//   }
-
-//   const userIndex = ad.favorites.indexOf(req.user.id);
-  
-//   if (userIndex === -1) {
-//     // Add favorite
-//     ad.favorites.push(req.user.id);
-//   } else {
-//     // Remove favorite
-//     ad.favorites.splice(userIndex, 1);
-//   }
-
-//   await ad.save({validateBeforeSave:false});
-
-//   res.status(200).json({
-//     isFavorited: userIndex === -1, // true if we just added it, false if we removed it
-//     favoritesCount: ad.favorites.length,
-//     favorites: ad.favorites
-//   });
-// });
 const toggleFavorite = asyncHandler(async (req, res) => {
   const ad = await Ad.findById(req.params.id);
 

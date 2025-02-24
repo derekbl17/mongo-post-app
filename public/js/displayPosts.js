@@ -1,7 +1,7 @@
 
-window.deletePost = deletePost;
-window.editPost = editPost;
-window.toggleFavorite = toggleFavorite;
+// window.deletePost = deletePost;
+// window.editPost = editPost;
+// window.toggleFavorite = toggleFavorite;
 
 // Handler functions for the buttons
 async function deletePost(postId) {
