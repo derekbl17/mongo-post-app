@@ -25,9 +25,8 @@ async function deletePost(postId) {
   }
 }
 
-let currentlyEditingPostId=null
+
 function editPost(postId) {
-    currentlyEditingPostId=postId
   const targetCard=document.getElementById(postId)
 
    // Get current values
@@ -149,7 +148,7 @@ function editPost(postId) {
 }
 
 
-export async function displayPosts() {
+export async function displayPosts(type=0) {
     console.log("displaying posts");
     let currentUser = null;
     let posts = null;
@@ -185,8 +184,16 @@ export async function displayPosts() {
         mainContainer.innerHTML = ''; // Clear is fine here as it's our controlled container
 
         posts.forEach(post => {
-            const card = createPostCard(post, currentUser);
-            mainContainer.appendChild(card);
+            if (type===1){
+                if (post.isFavoritedBy){
+                    const card = createPostCard(post, currentUser);
+                    mainContainer.appendChild(card);
+                }
+            }else{
+                const card = createPostCard(post, currentUser);
+                mainContainer.appendChild(card);
+            }
+            
         });
 
         // Add event listeners

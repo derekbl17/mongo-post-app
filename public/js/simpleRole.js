@@ -6,7 +6,16 @@ export async function simpleRole(){
     const addPostBtn=document.createElement("button")
     addPostBtn.innerText="Add Post"
 
+    const favoritesbtn=document.createElement("button")
+    favoritesbtn.innerText="Favorites"
+
+
     container.innerText="SIMPLE USER"
+
+    favoritesbtn.addEventListener("click",()=>{
+        console.log("FavBtn")
+        displayPosts(1)
+    })
     
     const showPostsBtn=document.createElement("button")
     showPostsBtn.innerText="Show posts"
@@ -14,7 +23,7 @@ export async function simpleRole(){
     showPostsBtn.addEventListener("click",()=>{
         displayPosts()
     })
-    header.append(addPostBtn,showPostsBtn)
+    header.append(addPostBtn,showPostsBtn,favoritesbtn)
 
     addPostBtn.addEventListener("click",(e)=>{
         container.innerHTML=""
