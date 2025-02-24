@@ -2,6 +2,7 @@
 console.log("index.js initiated")
 import { simpleRole } from "./simpleRole.js"
 import { adminRole } from "./adminRole.js"
+import { displayPosts } from "./displayPosts.js"
 
 const regSelect=document.getElementById("registerSelect")
 const loginSelect=document.getElementById("loginSelect")
@@ -76,6 +77,23 @@ const verification=()=>{
             registerSelect.remove()
             loginSelect.remove()
             const logoutBtn=document.createElement("button")
+            const filterPosts=document.createElement("select")
+            filterPosts.addEventListener("change",()=>{
+                console.log("selected", filterPosts.value)
+                displayPosts(filterPosts.value)
+            })
+            const defaultOption=document.createElement("option")
+            defaultOption.innerText="Category name"
+            defaultOption.value=""
+            filterPosts.append(defaultOption)
+            fetch("http://127.0.0.1:999/category",{method:"get"})
+            .then((res)=>res.json())
+            .then((data)=>data.forEach(element => {
+                const option=document.createElement("option")
+                option.value=element.name
+                option.innerText=element.name
+                filterPosts.append(option)
+            }))
             logoutBtn.innerText="Log out"
             logoutBtn.addEventListener("click",()=>{
                 fetch("http://127.0.0.1:999/auth/logout", { method: "POST",credentials:"include" })  // Trigger the logout route
@@ -85,7 +103,7 @@ const verification=()=>{
                     })
                     .catch((err) => console.error("Logout failed:", err));
             })
-            header.append(logoutBtn)
+            header.append(logoutBtn,filterPosts)
             user.role === "simple" ? simpleRole() : adminRole()
         } else if(user.isBlocked===true){ // if blocked, alert and delete cookies
             alert("Your account is blocked")

@@ -127,7 +127,7 @@ function editPost(postId) {
         const updatedAd = await response.json();
         console.log("Ad updated successfully:", updatedAd);
         //return updatedAd;
-        currentlyEditingPostId=null
+
         await displayPosts()
     } catch (error) {
         console.error("Error updating ad:", error);
@@ -138,7 +138,7 @@ function editPost(postId) {
     cancelBtn.textContent = 'Cancel';
     cancelBtn.className = 'cancel-btn';
     cancelBtn.addEventListener("click",async()=>{
-        currentlyEditingPostId=null
+
         await displayPosts()
     })
     
@@ -189,7 +189,10 @@ export async function displayPosts(type=0) {
                     const card = createPostCard(post, currentUser);
                     mainContainer.appendChild(card);
                 }
-            }else{
+            }else if (type===0){
+                const card = createPostCard(post, currentUser);
+                mainContainer.appendChild(card);
+            }else if(post.category===type){
                 const card = createPostCard(post, currentUser);
                 mainContainer.appendChild(card);
             }
@@ -201,6 +204,11 @@ export async function displayPosts(type=0) {
 
     } catch (error) {
         console.error("Error in displayPosts:", error);
+    }
+    if(mainContainer.innerHTML===""){
+        const emptyText=document.createElement("h2")
+        emptyText.innerText="No Posts were found!"
+        mainContainer.append(emptyText)
     }
 }
 

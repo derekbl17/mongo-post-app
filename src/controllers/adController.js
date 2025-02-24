@@ -4,7 +4,7 @@ const Ad = require("../models/Ad.js");
 // @ post
 // @ route /ads
 const recordAd = asyncHandler(async (req, res) => {
-  const { title, description, price, link } = req.body;
+  const { title, category, description, price, link } = req.body;
   if (!title || !description || !price || !link) {
     res.status(400);
     throw new Error("Please fill out all fields");
@@ -12,6 +12,7 @@ const recordAd = asyncHandler(async (req, res) => {
   const ad = await Ad.create({
     title,
     description,
+    category,
     price,
     link,
     user: req.user.id,
@@ -83,6 +84,37 @@ const deleteAd = asyncHandler(async(req,res)=>{
   res.status(200).json(ad)
 })
 // @ toggle favorite
+// const toggleFavorite = asyncHandler(async (req, res) => {
+//   const ad = await Ad.findById(req.params.id);
+
+//   if (!ad) {
+//     res.status(404);
+//     throw new Error("Ad not found");
+//   }
+
+//   // Initialize favorites array if it doesn't exist
+//   if (!ad.favorites) {
+//     ad.favorites = [];
+//   }
+
+//   const userIndex = ad.favorites.indexOf(req.user.id);
+  
+//   if (userIndex === -1) {
+//     // Add favorite
+//     ad.favorites.push(req.user.id);
+//   } else {
+//     // Remove favorite
+//     ad.favorites.splice(userIndex, 1);
+//   }
+
+//   await ad.save({validateBeforeSave:false});
+
+//   res.status(200).json({
+//     isFavorited: userIndex === -1, // true if we just added it, false if we removed it
+//     favoritesCount: ad.favorites.length,
+//     favorites: ad.favorites
+//   });
+// });
 const toggleFavorite = asyncHandler(async (req, res) => {
   const ad = await Ad.findById(req.params.id);
 
@@ -91,27 +123,20 @@ const toggleFavorite = asyncHandler(async (req, res) => {
     throw new Error("Ad not found");
   }
 
-  // Initialize favorites array if it doesn't exist
-  if (!ad.favorites) {
-    ad.favorites = [];
-  }
+  const isFavorited = ad.favorites.includes(req.user.id);
 
-  const userIndex = ad.favorites.indexOf(req.user.id);
-  
-  if (userIndex === -1) {
-    // Add favorite
-    ad.favorites.push(req.user.id);
-  } else {
-    // Remove favorite
-    ad.favorites.splice(userIndex, 1);
-  }
-
-  await ad.save();
+  const updatedAd = await Ad.findByIdAndUpdate(
+    req.params.id,
+    {
+      [isFavorited ? "$pull" : "$addToSet"]: { favorites: req.user.id }
+    },
+    { new: true, validateBeforeSave: false }
+  );
 
   res.status(200).json({
-    isFavorited: userIndex === -1, // true if we just added it, false if we removed it
-    favoritesCount: ad.favorites.length,
-    favorites: ad.favorites
+    isFavorited: !isFavorited,
+    favoritesCount: updatedAd.favorites.length,
+    favorites: updatedAd.favorites
   });
 });
 module.exports = { recordAd, getAd,updateAd,deleteAd, toggleFavorite };

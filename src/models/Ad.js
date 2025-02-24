@@ -7,6 +7,7 @@ const adSchema = new mongoose.Schema(
       type: String,
       required: [true, "title cant be empty"],
     },
+    category:{type:String, required:true},
     description: {
       type: String,
       required: [true, "description name cant be empty"],
